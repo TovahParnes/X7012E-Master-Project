@@ -1,0 +1,108 @@
+version: "1"
+seed: 42
+masking:
+  - selector:
+      jsonpath: "id"
+    mask:
+      incremental:
+        start: 1
+        increment: 1
+
+  - selector:
+      jsonpath: "timestamp"
+    mask:
+      randDate:
+        dateMin: "2025-01-01T00:00:00Z"
+        dateMax: "2025-07-01T00:00:00Z"
+
+  - selector:
+      jsonpath: "ip"
+    mask:
+      regex: "^([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))$"
+
+  - selector:
+      jsonpath: "first_name"
+    mask:
+      randomChoiceInUri: "pimo://nameFR"
+
+  - selector:
+      jsonpath: "last_name"
+    mask:
+      randomChoiceInUri: "pimo://surnameFR"
+
+  - selector:
+      jsonpath: "email"
+    mask:
+      template: "{{.first_name  | NoAccent | lower}}.{{.last_name | NoAccent | lower}}@gmail.com"
+
+  - selector:
+      jsonpath: "user_role"
+    mask:
+      weightedChoice:
+        - choice: "User"
+          weight: 6
+        - choice: "Manager"
+          weight: 3
+        - choice: "Admin"
+          weight: 1
+
+  - selector:
+      jsonpath: "adresse_brute"
+    masks:
+      - add-transient: ""
+      - randomChoiceInUri: "file://adresses.csv"
+  - selector:
+      jsonpath: "city"
+    mask:
+      template: '{{$a := split ";" (toString .adresse_brute) }}{{$a._7}}'
+
+  - selector:
+      jsonpath: "action"
+    mask:
+      randomChoice:
+        - "login"
+        - "logout"
+        - "password_reset"
+        - "session_expired"
+        - "register_user"
+        - "update_profile"
+        - "change_password"
+        - "delete_account"
+        - "reset_password"
+        - view_item
+        - search_item
+        - add_to_cart
+        - remove_from_cart
+        - purchase
+        - upload_file
+        - download_file
+        - edit_record
+        - delete_record
+        - create_user
+        - assign_role
+        - revoke_access
+        - system_backup
+        - system_restore
+        - export_data
+        - shutdown_service
+
+  - selector:
+      jsonpath: "outcome"
+    mask:
+      weightedChoice:
+        - choice: "Success"
+          weight: 10
+        - choice: "Partial_success"
+          weight: 2
+        - choice: "Failure_invalid_credential"
+          weight: 3
+        - choice: "Failure_permission_denied"
+          weight: 3
+        - choice: "Failure_invalid_unput"
+          weight: 3
+        - choice: "Failure_timeout"
+          weight: 5
+        - choice: "Failure_system_error"
+          weight: 2
+        - choice: "Failure_other"
+          weight: 1

@@ -1,0 +1,40 @@
+version: "1"
+seed: 42
+masking:
+  - selector:
+      jsonpath: "telephone"
+    mask:
+      regex: "0[1-7]( ([0-9]){2}){4}"
+
+  - selector:
+      jsonpath: "adresse_brute"
+    masks:
+      - add-transient: ""
+      - randomChoiceInUri: "file://adresses.csv"
+
+  - selector:
+      jsonpath: "address"
+    mask:
+      template: '{{$a := split ";" (toString .adresse_brute) }}{{$a._2}}, {{$a._4}}'
+
+  - selector:
+      jsonpath: "city"
+    mask:
+      template: '{{$a := split ";" (toString .adresse_brute) }}{{$a._7}}'
+
+  - selector:
+      jsonpath: "first_name"
+    mask:
+      randomChoiceInUri: "pimo://nameFR"
+
+  - selector:
+      jsonpath: "last_name"
+    mask:
+      randomChoiceInUri: "pimo://surnameFR"
+
+  - selector:
+      jsonpath: "id"
+    mask:
+      incremental:
+        start: 1
+        increment: 1

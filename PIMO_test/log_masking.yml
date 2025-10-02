@@ -1,0 +1,19 @@
+version: "1"
+seed: 42
+masking:
+  - selector:
+      jsonpath: "id"
+    mask:
+      incremental:
+        start: 1
+        increment: 1
+
+  - selector:
+      jsonpath: "ip"
+    mask:
+      regex: "^([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))$"
+
+  - selector:
+      jsonpath: "user.first_name"
+    mask:
+      randomChoiceInUri: "pimo://nameFR"
