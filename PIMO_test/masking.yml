@@ -106,3 +106,10 @@ masking:
           weight: 2
         - choice: "Failure_other"
           weight: 1
+
+  - selector:
+      jsonpath: "latency"
+    mask:
+      randomInt:
+        min: 0
+        max: 1000
